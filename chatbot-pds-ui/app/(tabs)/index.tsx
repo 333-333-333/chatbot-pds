@@ -1,14 +1,41 @@
-import { StyleSheet } from 'react-native';
+import { ActivityIndicator, StyleSheet } from 'react-native';
 
-import EditScreenInfo from '@/components/EditScreenInfo';
 import { Text, View } from '@/components/Themed';
+import DashboardWeatherCard from '@/components/DashboardWeatherCard';
+import { useEffect, useState } from 'react';
+import { fetchWeather, WeatherData } from '@/api/weatherApi';
 
 export default function TabOneScreen() {
+  const [loading, setLoading] = useState(true)
+  const [weather, setWeather] = useState<WeatherData | null>(null)
+  const LOCATION = "Temuco"
+  
+  useEffect(() => {
+    const loadWeather = async () => {
+      try {
+        const data = await fetchWeather(LOCATION)
+        setWeather(data)
+      } catch (error) {
+        console.error("Failed to fetch weather", error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    loadWeather()
+  }, [])
+
+  if (loading) {
+    return <ActivityIndicator size="large" color="#333" />
+  }
+
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Tab One</Text>
+      <Text style={styles.title}>Dashboard</Text>
       <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-      <EditScreenInfo path="app/(tabs)/index.tsx" />
+      {weather && (
+        <DashboardWeatherCard location={LOCATION} {...weather}/>
+      )}
     </View>
   );
 }
