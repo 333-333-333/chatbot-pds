@@ -1,6 +1,6 @@
-import { News } from '@/interfaces';
-import { NewsApi } from '@/api';
-import { mapResponseToNewsArray } from '@/interceptors/newsInterceptor';
+import { News } from "@/interfaces";
+import { NewsApi } from "@/api";
+import { mapResponseToNewsArray } from "@/interceptors/newsInterceptor";
 
 /**
  * Repository class for fetching news data from the API.
@@ -39,12 +39,14 @@ export class NewsRepository {
 
       console.log(JSON.stringify(raw, null, 2));
    */
-  async getFinancialNewsByCountryCode(countryCode: string): Promise<News[] | null> {
+  async getFinancialNewsByCountryCode(
+    countryCode: string,
+  ): Promise<News[] | null> {
     try {
       const response = await this.newsApi.getFinancialNews(countryCode);
 
       if (!response) {
-        console.warn('No news articles found or unexpected format');
+        console.warn("No news articles found or unexpected format");
         return null;
       }
 

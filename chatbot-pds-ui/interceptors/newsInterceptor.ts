@@ -1,18 +1,18 @@
-import { News } from '@/interfaces';
+import { News } from "@/interfaces";
 
 /**
  * Transforms a raw news API response into a standardized News array format
- * 
+ *
  * This function processes the response from a news API, mapping each item to
  * our application's consistent News interface structure:
  * - title: The news article headline
  * - url: The link to the full article
  * - description: A brief summary of the article content
- * 
+ *
  * @param {any} response - The raw response data from the news API
  * @returns {News[]} A properly formatted array of News objects
  * @throws {Error} When the response is not an array or has unexpected structure
- * 
+ *
  * @example
  * // API returns: [{ title: "Breaking News", link: "https://example.com", description: "..." }]
  * const news = mapResponseToNewsArray(apiResponse);

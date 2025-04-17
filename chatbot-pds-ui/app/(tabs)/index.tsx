@@ -1,42 +1,59 @@
-import { StyleSheet } from 'react-native';
+import { ActivityIndicator, StyleSheet } from "react-native";
+import { Text, View } from "@/components/Themed";
+import WeatherSection from "@/components/weather/WeatherSection";
+import { useEffect, useState } from "react";
+import { News, LocalizedWeather } from "@/interfaces";
+import NewsSection from "@/components/news/NewsSection";
+import {
+  getCurrentWeather,
+  getFinancialNewsByLocationUseCase,
+} from "@/use-cases";
 
-import EditScreenInfo from '@/components/EditScreenInfo';
-import { Text, View } from '@/components/Themed';
-import { useEffect, useState } from 'react';
-import { News } from '@/interfaces';
-import NewsSection from '@/components/news/NewsSection';
-
-import { getFinancialNewsByLocationUseCase } from '@/use-cases/getFinancialNewsByLocationUseCase';
 export default function TabOneScreen() {
+  const [weatherLoading, setWeatherLoading] = useState(true);
+  const [weather, setWeather] = useState<LocalizedWeather | null>(null);
   const [news, setNews] = useState<News[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [newsLoading, setNewsLoading] = useState(true);
 
+  // Cargar datos del clima
   useEffect(() => {
-    console.log('TabOneScreen mounted');
-    // Example usage of the use use-casei
+    const loadWeather = async () => {
+      try {
+        const data = await getCurrentWeather();
+        console.log(data);
+        setWeather(data);
+      } catch (error) {
+        console.error("Failed to fetch weather", error);
+      } finally {
+        setWeatherLoading(false);
+      }
+    };
+
+    loadWeather();
+  }, []);
+
+  // Cargar noticias financieras
+  useEffect(() => {
     const getNews = async () => {
       try {
         const news = await getFinancialNewsByLocationUseCase();
-        console.log('Fetched news:', news);
         setNews(news);
       } catch (error) {
-        console.error('Error fetching financial news:', error);
+        console.error("Error fetching financial news:", error);
       } finally {
-        setLoading(false);
+        setNewsLoading(false);
       }
-    }
-    getNews();
-    return () => {
-      console.log('TabOneScreen unmounted');
     };
+
+    getNews();
   }, []);
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Tab One</Text>
-      <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-      <EditScreenInfo path="app/(tabs)/index.tsx" />
-      <NewsSection news={news} loading={loading} />
+      {/* Sección del clima */}
+      <WeatherSection localizedWeather={weather} loading={weatherLoading} />
+      {/* Sección de noticias */}
+      <NewsSection news={news} loading={newsLoading} />
     </View>
   );
 }
@@ -44,16 +61,16 @@ export default function TabOneScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   title: {
     fontSize: 20,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   separator: {
     marginVertical: 30,
     height: 1,
-    width: '80%',
+    width: "80%",
   },
 });

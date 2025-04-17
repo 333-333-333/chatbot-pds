@@ -1,2 +1,2 @@
-export * from './locationApi';
-export * from './newsApi';
+export * from "./locationApi";
+export * from "./newsApi";

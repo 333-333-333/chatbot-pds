@@ -1,2 +1,3 @@
-export * from './locationRepository';
-export * from './newsRepository';
+export * from "./locationRepository";
+export * from "./weatherRepository";
+export * from "./newsRepository";
