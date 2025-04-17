@@ -2,29 +2,24 @@ import React from 'react';
 import { StyleSheet } from 'react-native'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 import { Card, View, Text } from 'react-native-ui-lib';
-import { Condition, TimeOfDay, WeatherData } from '@/api/weatherApi';
-
-interface DashboardWeatherCardProps extends WeatherData {
-    location: string
-}
+import { Condition, LocalizedWeather, TimeOfDay } from '@/interfaces';
 
 const INFO_ICON_SIZE = 20
 
-const DashboardWeatherCard: React.FC<DashboardWeatherCardProps> = ({ location, condition, timeOfDay, temperatureC, humidity }) => {
-    const temperatureF = (temperatureC * 9) / 5 + 32
+export const DashboardWeatherCard: React.FC<LocalizedWeather> = ({ condition, timeOfDay, temperatureCelsius, temperatureFahrenheit, humidity, location }) => {
     const icon = getConditionIcon(condition, timeOfDay)
-    const thermometerIcon = getThermometerIcon(temperatureC)
+    const thermometerIcon = getThermometerIcon(temperatureCelsius)
     const waterPercentIcon = getMaterialIcon("water", "#2196f3", INFO_ICON_SIZE)
 
     return (
         <Card style={styles.card}>
             <View style={styles.container}>
-                <Text style={styles.title}>El clima en {location}</Text>
+                <Text style={styles.title}>El clima en {location.city}</Text>
                 <Text style={styles.date}>{getFormattedDate()}</Text>
                 <View style={styles.contentContainer}>
                     <Text style={styles.icon}>{icon}</Text>
                     <View style={styles.infoContainer}>
-                        <Text style={styles.infoText}>{thermometerIcon}{temperatureC.toFixed(0)}°C / {temperatureF.toFixed(0)}°F</Text>
+                        <Text style={styles.infoText}>{thermometerIcon}{temperatureCelsius.toFixed(0)}°C / {temperatureFahrenheit.toFixed(0)}°F</Text>
                         <Text style={styles.infoText}>{waterPercentIcon}{humidity}%</Text>
                     </View>
                 </View>
@@ -74,16 +69,16 @@ const getConditionIcon = (condition: Condition, timeOfDay: TimeOfDay): React.Rea
     }
 }
 
-const getThermometerIcon = (temperatureC: number): React.ReactElement => {
-    if (temperatureC >= 25) {
+const getThermometerIcon = (temperatureCelsius: number): React.ReactElement => {
+    if (temperatureCelsius >= 25) {
         return getMaterialIcon("thermometer-high", "#e53935", INFO_ICON_SIZE)
     }
 
-    if (temperatureC >= 10) {
+    if (temperatureCelsius >= 10) {
         return getMaterialIcon("thermometer", "#43a047", INFO_ICON_SIZE)
     }
 
-    if (temperatureC >= 0) {
+    if (temperatureCelsius >= 0) {
         return getMaterialIcon("thermometer-low", "#1e88e5", INFO_ICON_SIZE)
     }
 
@@ -140,5 +135,3 @@ const styles = StyleSheet.create({
         color: "#333333",
     },
 })
-
-export default DashboardWeatherCard
