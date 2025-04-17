@@ -1,13 +1,55 @@
-import React from "react";
-import { StyleSheet } from "react-native";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { Card } from "react-native-ui-lib";
-import { View, Text } from "@/components/Themed";
-import { Condition, LocalizedWeather, TimeOfDay } from "@/interfaces";
+/**
+ * WeatherSection Component
+ *
+ * @description
+ * Displays current weather information for a specific location with visual indicators
+ * for different weather conditions. The component handles three states:
+ * 1. Loading state - Shows a spinner while fetching weather data
+ * 2. Error state - Shows an error message when weather data is unavailable
+ * 3. Data state - Shows formatted weather information with appropriate icons
+ *
+ * @component
+ * @param {WeatherSectionProps} props - The component props
+ * @param {LocalizedWeather | undefined} props.localizedWeather - Weather data object with location, temperature, and condition information
+ * @param {boolean} props.loading - Indicates if weather data is currently being fetched
+ *
+ * @returns {JSX.Element} A card displaying weather information, loading indicator, or error message
+ *
+ * @example
+ * // Example with data
+ * <WeatherSection
+ *   localizedWeather={{
+ *     location: { city: "Santiago" },
+ *     temperatureCelsius: 25,
+ *     temperatureFahrenheit: 77,
+ *     humidity: 45,
+ *     condition: "clear_sky",
+ *     timeOfDay: "day"
+ *   }}
+ *   loading={false}
+ * />
+ *
+ * // Example while loading
+ * <WeatherSection loading={true} />
+ *
+ * // Example with error
+ * <WeatherSection loading={false} />
+ */
 
+import React from "react";
+import { StyleSheet, ActivityIndicator } from "react-native";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { View, Text } from "@/components/Themed";
+import { LocalizedWeather, TimeOfDay } from "@/interfaces";
+
+// Constants
 const INFO_ICON_SIZE = 20;
 const CONDITION_ICON_SIZE = 70;
 
+/**
+ * Valid Material Community icon names used in the weather component
+ * @typedef {string} IconName
+ */
 type IconName =
   | "weather-sunny"
   | "weather-partly-cloudy"
@@ -23,28 +65,76 @@ type IconName =
   | "thermometer"
   | "thermometer-high"
   | "thermometer-low"
-  | "water";
+  | "water"
+  | "alert-circle-outline";
 
-export default function WeatherSection(
-  localizedWeather: LocalizedWeather,
-): JSX.Element {
-  const {
-    condition,
-    timeOfDay,
-    temperatureCelsius,
-    temperatureFahrenheit,
-    humidity,
-    location,
-  } = localizedWeather;
+/**
+ * Props for the WeatherSection component
+ * @interface WeatherSectionProps
+ */
+interface WeatherSectionProps {
+  /** Weather data object (undefined when data is not available) */
+  localizedWeather?: LocalizedWeather;
+  /** Indicates if weather data is currently being fetched */
+  loading: boolean;
+}
 
-  const icon = getConditionIcon(condition, timeOfDay);
-  const thermometerIcon = getThermometerIcon(temperatureCelsius);
+/**
+ * WeatherSection component implementation
+ *
+ * @param {WeatherSectionProps} props - Component props
+ * @returns {JSX.Element} Weather section component
+ */
+export default function WeatherSection({
+  localizedWeather,
+  loading,
+}: WeatherSectionProps): JSX.Element {
+  // Loading state
+  if (loading) {
+    return (
+      <View style={styles.card} lightColor="#eee" darkColor="#111">
+        <View
+          style={styles.loadingContainer}
+          lightColor="#eee"
+          darkColor="#111"
+        >
+          <ActivityIndicator size="large" color="#0000ff" />
+          <Text style={styles.loadingText}>Cargando datos meteorológicos</Text>
+        </View>
+      </View>
+    );
+  }
+
+  // Error state - no weather data available
+  if (!localizedWeather) {
+    return (
+      <View style={styles.card} lightColor="#eee" darkColor="#111">
+        <View style={styles.errorContainer} lightColor="#eee" darkColor="#111">
+          {getMaterialIcon("alert-circle-outline", "#F44336", 40)}
+          <Text style={styles.errorText}>
+            No se han podido traer los datos climáticos
+          </Text>
+        </View>
+      </View>
+    );
+  }
+
+  // Weather data available
+  const icon = getConditionIcon(
+    localizedWeather.condition,
+    localizedWeather.timeOfDay,
+  );
+  const thermometerIcon = getThermometerIcon(
+    localizedWeather.temperatureCelsius,
+  );
   const waterPercentIcon = getMaterialIcon("water", "#2196f3", INFO_ICON_SIZE);
 
   return (
     <View style={styles.card} lightColor="#eee" darkColor="#111">
       <View style={styles.container} lightColor="#eee" darkColor="#111">
-        <Text style={styles.title}>El clima en {location.city}</Text>
+        <Text style={styles.title}>
+          El clima en {localizedWeather.location.city}
+        </Text>
         <Text style={styles.date}>{getFormattedDate()}</Text>
         <View
           style={styles.contentContainer}
@@ -55,12 +145,12 @@ export default function WeatherSection(
           <View style={styles.infoContainer} lightColor="#eee" darkColor="#111">
             <Text style={styles.infoText}>
               {thermometerIcon}
-              {temperatureCelsius.toFixed(0)}°C /{" "}
-              {temperatureFahrenheit.toFixed(0)}°F
+              {localizedWeather.temperatureCelsius.toFixed(0)}°C /{" "}
+              {localizedWeather.temperatureFahrenheit.toFixed(0)}°F
             </Text>
             <Text style={styles.infoText}>
               {waterPercentIcon}
-              {humidity}%
+              {localizedWeather.humidity}%
             </Text>
           </View>
         </View>
@@ -69,6 +159,11 @@ export default function WeatherSection(
   );
 }
 
+/**
+ * Returns a formatted date string in the local language format
+ *
+ * @returns {string} Formatted date string (e.g. "Monday, January 1, 2023")
+ */
 const getFormattedDate = (): string => {
   const now = new Date();
   return now.toLocaleDateString(undefined, {
@@ -79,8 +174,15 @@ const getFormattedDate = (): string => {
   });
 };
 
+/**
+ * Returns the appropriate weather icon based on weather condition and time of day
+ *
+ * @param {any} condition - Weather condition code (e.g. "clear_sky", "rain")
+ * @param {TimeOfDay} timeOfDay - Current time of day ("day" or "night")
+ * @returns {React.ReactElement} MaterialCommunityIcons component with appropriate icon
+ */
 const getConditionIcon = (
-  condition: Condition,
+  condition: any,
   timeOfDay: TimeOfDay,
 ): React.ReactElement => {
   switch (condition) {
@@ -119,6 +221,12 @@ const getConditionIcon = (
   }
 };
 
+/**
+ * Returns the appropriate thermometer icon based on temperature
+ *
+ * @param {number} temperatureCelsius - Temperature in Celsius
+ * @returns {React.ReactElement} MaterialCommunityIcons component with appropriate thermometer icon
+ */
 const getThermometerIcon = (temperatureCelsius: number): React.ReactElement => {
   if (temperatureCelsius >= 25) {
     return getMaterialIcon("thermometer-high", "#e53935", INFO_ICON_SIZE);
@@ -135,6 +243,14 @@ const getThermometerIcon = (temperatureCelsius: number): React.ReactElement => {
   return getMaterialIcon("thermometer-low", "#1ecbe5", INFO_ICON_SIZE);
 };
 
+/**
+ * Returns a MaterialCommunityIcons component with specified properties
+ *
+ * @param {IconName} name - Name of the icon from MaterialCommunityIcons
+ * @param {string} color - Color of the icon in hex format
+ * @param {number} [size=CONDITION_ICON_SIZE] - Size of the icon in pixels
+ * @returns {React.ReactElement} MaterialCommunityIcons component
+ */
 const getMaterialIcon = (
   name: IconName,
   color: string,
@@ -143,14 +259,40 @@ const getMaterialIcon = (
   return <MaterialCommunityIcons name={name} color={color} size={size} />;
 };
 
+/**
+ * Styles for the WeatherSection component
+ */
 const styles = StyleSheet.create({
   card: {
     borderRadius: 8,
     padding: 20,
     marginHorizontal: 16,
+    height: 180,
+    width: 260,
   },
   container: {
     alignItems: "center",
+    justifyContent: "center",
+  },
+  loadingContainer: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  errorContainer: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  loadingText: {
+    marginTop: 12,
+    fontSize: 16,
+  },
+  errorText: {
+    marginTop: 12,
+    fontSize: 16,
+    color: "#F44336",
+    textAlign: "center",
   },
   title: {
     fontSize: 18,

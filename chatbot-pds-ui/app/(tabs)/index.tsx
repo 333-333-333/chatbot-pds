@@ -48,16 +48,10 @@ export default function TabOneScreen() {
     getNews();
   }, []);
 
-  // Mostrar indicador de carga mientras se cargan los datos iniciales
-  if (weatherLoading && newsLoading) {
-    return <ActivityIndicator size="large" color="#333" />;
-  }
-
   return (
     <View style={styles.container}>
       {/* Sección del clima */}
-      {weather && <WeatherSection {...weather} />}
-
+      <WeatherSection localizedWeather={weather} loading={weatherLoading} />
       {/* Sección de noticias */}
       <NewsSection news={news} loading={newsLoading} />
     </View>
