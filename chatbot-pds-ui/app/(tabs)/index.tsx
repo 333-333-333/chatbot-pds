@@ -4,8 +4,10 @@ import WeatherSection from "@/components/weather/WeatherSection";
 import { useEffect, useState } from "react";
 import { News, LocalizedWeather } from "@/interfaces";
 import NewsSection from "@/components/news/NewsSection";
-import { getCurrentWeather } from "@/use-cases/getCurrentWeatherUseCase";
-import { getFinancialNewsByLocationUseCase } from "@/use-cases/getFinancialNewsByLocationUseCase";
+import {
+  getCurrentWeather,
+  getFinancialNewsByLocationUseCase,
+} from "@/use-cases";
 
 export default function TabOneScreen() {
   const [weatherLoading, setWeatherLoading] = useState(true);
@@ -18,6 +20,7 @@ export default function TabOneScreen() {
     const loadWeather = async () => {
       try {
         const data = await getCurrentWeather();
+        console.log(data);
         setWeather(data);
       } catch (error) {
         console.error("Failed to fetch weather", error);
@@ -52,13 +55,6 @@ export default function TabOneScreen() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Dashboard</Text>
-      <View
-        style={styles.separator}
-        lightColor="#eee"
-        darkColor="rgba(255,255,255,0.1)"
-      />
-
       {/* Sección del clima */}
       {weather && <WeatherSection {...weather} />}
 

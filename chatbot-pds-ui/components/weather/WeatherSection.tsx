@@ -42,13 +42,17 @@ export default function WeatherSection(
   const waterPercentIcon = getMaterialIcon("water", "#2196f3", INFO_ICON_SIZE);
 
   return (
-    <Card style={styles.card}>
-      <View style={styles.container}>
+    <View style={styles.card} lightColor="#eee" darkColor="#111">
+      <View style={styles.container} lightColor="#eee" darkColor="#111">
         <Text style={styles.title}>El clima en {location.city}</Text>
         <Text style={styles.date}>{getFormattedDate()}</Text>
-        <View style={styles.contentContainer}>
+        <View
+          style={styles.contentContainer}
+          lightColor="#eee"
+          darkColor="#111"
+        >
           <Text style={styles.icon}>{icon}</Text>
-          <View style={styles.infoContainer}>
+          <View style={styles.infoContainer} lightColor="#eee" darkColor="#111">
             <Text style={styles.infoText}>
               {thermometerIcon}
               {temperatureCelsius.toFixed(0)}°C /{" "}
@@ -61,7 +65,7 @@ export default function WeatherSection(
           </View>
         </View>
       </View>
-    </Card>
+    </View>
   );
 }
 
@@ -141,23 +145,20 @@ const getMaterialIcon = (
 
 const styles = StyleSheet.create({
   card: {
-    borderRadius: 12,
+    borderRadius: 8,
     padding: 20,
-    elevation: 4,
-    minWidth: 250,
+    marginHorizontal: 16,
   },
   container: {
     alignItems: "center",
   },
   title: {
-    fontSize: 24,
+    fontSize: 18,
     fontWeight: "600",
     marginBottom: 4,
-    color: "#333333",
   },
   date: {
     fontSize: 14,
-    color: "#777",
     marginBottom: 16,
   },
   contentContainer: {
@@ -174,8 +175,7 @@ const styles = StyleSheet.create({
     height: 80,
   },
   infoText: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: "500",
-    color: "#333333",
   },
 });

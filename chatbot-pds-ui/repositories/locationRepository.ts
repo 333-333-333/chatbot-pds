@@ -26,29 +26,27 @@ export class LocationRepository {
    * @returns {Promise<LocationCoordinates | null>} A promise that resolves to an object containing latitude and longitude,
    * or null if permission is denied or an error occurs.
    */
-  async getCurrentPosition(): Promise<LocationCoordinates | null> {
+  public async getCoordinates(): Promise<LocationCoordinates | null> {
     try {
       const { status } = await ExpoLocation.requestForegroundPermissionsAsync();
       if (status !== "granted") {
-        console.error("Permission to access location was denied");
-        return null;
+        throw new Error("Permission to access location was denied");
       }
 
       const location = await ExpoLocation.getCurrentPositionAsync({});
 
       if (!location) {
         console.error("Location not found");
-        return null;
+        throw new Error("Location not found");
       }
 
       const coords: LocationCoordinates = {
         latitude: location.coords.latitude,
         longitude: location.coords.longitude,
       };
-      return coords;
+      return coords as LocationCoordinates;
     } catch (error) {
-      console.error("Error fetching current position:", error);
-      return null;
+      throw new Error(`Error getting location: ${error}`);
     }
   }
   /**
@@ -73,7 +71,7 @@ export class LocationRepository {
    */
   public async getLocation(): Promise<Location | null> {
     try {
-      const coords = await this.getCurrentPosition();
+      const coords = await this.getCoordinates();
 
       if (!coords) {
         console.error("Coordinates not found");
