@@ -10,3 +10,10 @@ npm run android
 › Press a │ open Android
 ```
 
+=======
+
+## Prepare pre-commit Prettier hook
+
+```
+npm run prepare
+```
