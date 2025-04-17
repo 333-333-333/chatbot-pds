@@ -1,13 +1,15 @@
 import { LocationRepository, NewsRepository } from "@/repositories";
 import { News } from "@/interfaces";
 
+// Create repositories
+const locationRepository = new LocationRepository();
+const newsRepository = new NewsRepository();
+
 /**
  * Fetches financial news based on the user's current location.
  * This function adheres to the Single Responsibility Principle by focusing solely 
  * on obtaining location-based financial news.
  * 
- * @param {LocationRepository} locationRepository - Repository for getting user location data
- * @param {NewsRepository} newsRepository - Repository for fetching news articles
  * @returns {Promise<News[]>} A promise that resolves to an array of News objects
  * @throws {Error} Throws an error if location data cannot be retrieved
  * 
@@ -28,9 +30,6 @@ import { News } from "@/interfaces";
  */
 export async function getFinancialNewsByLocationUseCase(
 ): Promise<News[]> {
-  // Create repositories
-  const locationRepository = new LocationRepository();
-  const newsRepository = new NewsRepository();
 
   // Get the coordinates of the location
   const location = await locationRepository.getLocation();
