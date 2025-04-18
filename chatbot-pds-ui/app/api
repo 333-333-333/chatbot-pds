@@ -1,0 +1,17 @@
+import axios from 'axios';
+
+const API_URL = 'https://mindicador.cl/api';
+
+export async function getIndicadores() {
+  try {
+    const response = await axios.get(API_URL);
+    return {
+      uf: response.data.uf.valor,
+      dolar: response.data.dolar.valor,
+      fecha: response.data.fecha
+    };
+  } catch (error) {
+    console.error('Error al obtener indicadores:', error);
+    return null;
+  }
+}
