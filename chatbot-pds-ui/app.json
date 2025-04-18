@@ -15,7 +15,7 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.anonymous.chatbotpdsui"
+      "bundleIdentifier": "com.x333333333.chatbotpdsui"
     },
     "android": {
       "adaptiveIcon": {

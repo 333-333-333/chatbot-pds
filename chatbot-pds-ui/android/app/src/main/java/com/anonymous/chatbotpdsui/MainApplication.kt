@@ -1,4 +1,4 @@
-package com.anonymous.chatbotpdsui
+package com.x333333333.chatbotpdsui
 
 import android.app.Application
 import android.content.res.Configuration

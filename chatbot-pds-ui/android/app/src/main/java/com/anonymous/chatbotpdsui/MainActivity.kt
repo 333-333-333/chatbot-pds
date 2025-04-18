@@ -1,4 +1,4 @@
-package com.anonymous.chatbotpdsui
+package com.x333333333.chatbotpdsui
 import expo.modules.splashscreen.SplashScreenManager
 
 import android.os.Build
