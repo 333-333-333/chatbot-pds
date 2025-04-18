@@ -43,7 +43,6 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   container: {
-    borderRadius: 8,
     padding: 16,
   },
   imageContainer: {
@@ -53,11 +52,11 @@ const styles = StyleSheet.create({
   },
   image: {
     width: "100%",
-    height: 100,
+    height: 160,
     borderRadius: 4,
   },
   title: {
-    fontSize: 18,
+    fontSize: 14,
     fontWeight: "bold",
     marginTop: 8,
   },

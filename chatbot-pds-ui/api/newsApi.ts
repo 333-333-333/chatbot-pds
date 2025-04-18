@@ -4,6 +4,12 @@
  * This class provides methods to retrieve top headlines from the News API
  * based on country code and category filters.
  */
+
+/**
+ * Base URL for the News API from environment variables,
+ */
+const API_URL = process.env.EXPO_PUBLIC_NEWS_API_URL;
+
 export class NewsApi {
   /**
    * Fetches top headlines news articles based on country and category
@@ -26,14 +32,17 @@ export class NewsApi {
    */
   public async getFinancialNews(countryCode: string): Promise<any> {
     try {
-      const response = await fetch(
-        `${process.env.EXPO_PUBLIC_NEWS_API_URL}?apikey=${process.env.EXPO_PUBLIC_NEWS_API_KEY}&country=${countryCode}&category=business`,
-        {
-          headers: {
-            Accept: "application/json",
-          },
+      if (!API_URL) {
+        throw new Error("API URL is not defined");
+      }
+
+      const url = `${API_URL}?apikey=${process.env.EXPO_PUBLIC_NEWS_API_KEY}&country=${countryCode}&category=business`;
+
+      const response = await fetch(url, {
+        headers: {
+          Accept: "application/json",
         },
-      );
+      });
 
       if (!response.ok) {
         throw new Error(`HTTP error ${response.status}`);

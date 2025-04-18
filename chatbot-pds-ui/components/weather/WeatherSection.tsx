@@ -111,9 +111,7 @@ export default function WeatherSection({
       <View style={styles.card} lightColor="#eee" darkColor="#111">
         <View style={styles.errorContainer} lightColor="#eee" darkColor="#111">
           {getMaterialIcon("alert-circle-outline", "#F44336", 40)}
-          <Text style={styles.errorText}>
-            No se han podido traer los datos climáticos
-          </Text>
+          <Text style={styles.errorText}>Error al cargar datos climáticos</Text>
         </View>
       </View>
     );
@@ -133,7 +131,6 @@ export default function WeatherSection({
     <View style={styles.card} lightColor="#eee" darkColor="#111">
       <View style={styles.container} lightColor="#eee" darkColor="#111">
         <Text style={styles.title}>{localizedWeather.location.city}</Text>
-        <Text style={styles.date}>{getFormattedDate()}</Text>
         <View
           style={styles.contentContainer}
           lightColor="#eee"
@@ -265,8 +262,8 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     padding: 20,
     marginHorizontal: 16,
-    height: 180,
-    width: 260,
+    height: 140,
+    width: 220,
   },
   container: {
     alignItems: "center",
@@ -295,11 +292,6 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 18,
     fontWeight: "600",
-    marginBottom: 4,
-  },
-  date: {
-    fontSize: 14,
-    marginBottom: 16,
   },
   contentContainer: {
     flexDirection: "row",
@@ -307,15 +299,14 @@ const styles = StyleSheet.create({
   },
   icon: {
     fontSize: 64,
-    paddingRight: 12,
+    paddingRight: 8,
   },
   infoContainer: {
     flex: 1,
     justifyContent: "space-around",
-    height: 80,
+    height: 60,
   },
   infoText: {
-    fontSize: 18,
-    fontWeight: "500",
+    fontSize: 16,
   },
 });

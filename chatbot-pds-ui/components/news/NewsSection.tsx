@@ -2,25 +2,22 @@ import { News } from "@/interfaces";
 import { Text, View } from "@/components/Themed";
 import { ActivityIndicator, ScrollView, StyleSheet } from "react-native";
 import NewsCard from "@/components/news/NewsCard";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 /**
- * Fixed height (in pixels) for the news section.
- * This constant determines the vertical size of the entire section,
- * both in loading state and when displaying content.
- */
-const SECTION_HEIGHT = 360;
-
-/**
- * Component that displays a section of financial news.
+ * NewsSection Component
  *
- * This component shows a section title followed by a list of news cards
- * or a loading indicator. It maintains a constant height regardless of
- * its state (loading or displaying news). If no news are available,
- * it displays a message to the user.
+ * @description
+ * Displays a section of financial news with cards. The component handles three states:
+ * 1. Loading state - Shows a spinner while fetching news data
+ * 2. Empty state - Shows a message when no news are available
+ * 3. Data state - Shows a scrollable list of news cards
+ *
+ * The component maintains a consistent height regardless of its state.
  *
  * @component
  * @param {object} props - Component properties
- * @param {News[]} props.news - Array of news objects to display
+ * @param {News[] | undefined} props.news - Array of news objects to display
  * @param {boolean} props.loading - Loading state: true if loading, false if data is ready
  * @returns {JSX.Element} - Rendered news section component
  *
@@ -31,46 +28,117 @@ const SECTION_HEIGHT = 360;
  *   loading={isLoading}
  * />
  */
+
+/**
+ * Fixed height (in pixels) for the news section.
+ * This constant determines the vertical size of the entire section,
+ * both in loading state and when displaying content.
+ */
+const SECTION_HEIGHT = 300;
+
+/**
+ * Icon size for various elements in the component
+ */
+const ICON_SIZE = 40;
+
+/**
+ * Valid Material Community icon names used in the news component
+ * @typedef {string} IconName
+ */
+type IconName =
+  | "newspaper"
+  | "newspaper-variant-outline"
+  | "alert-circle-outli00"
+  | "refresh"
+  | "information-outline";
+
 export default function NewsSection({
   news,
   loading,
 }: {
-  news: News[];
+  news?: News[];
   loading: boolean;
 }): JSX.Element {
-  return (
-    <View style={styles.container}>
-      <Text style={styles.sectionTitle}>Últimas noticias financieras</Text>
-      <View style={styles.newsContainer}>
-        {loading ? (
-          // Shows centered loading indicator when loading=true
-          <View style={styles.loaderContainer}>
+  // Loading state
+  if (loading) {
+    return (
+      <View style={styles.container} lightColor="#eee" darkColor="#111">
+        <Text style={styles.sectionTitle}>Últimas noticias financieras</Text>
+        <View style={styles.newsContainer} lightColor="#eee" darkColor="#111">
+          <View
+            style={styles.loaderContainer}
+            lightColor="#eee"
+            darkColor="#111"
+          >
             <ActivityIndicator color="#00FF00" size="large" />
-          </View>
-        ) : news.length === 0 ? (
-          // Shows message when no news are available
-          <View style={styles.emptyContainer}>
-            <Text style={styles.emptyMessage}>
-              ¡Ups! No hay noticias financieras relevantes, regresa más tarde
+            <Text style={styles.loadingText}>
+              Cargando noticias financieras
             </Text>
           </View>
-        ) : (
-          // Shows scrollable news list when news are available
-          <ScrollView
-            style={styles.scrollView}
-            showsVerticalScrollIndicator={true}
+        </View>
+      </View>
+    );
+  }
+
+  // Empty state - no news available
+  if (!news || news.length === 0) {
+    return (
+      <View style={styles.container} lightColor="#eee" darkColor="#111">
+        <Text style={styles.sectionTitle}>Últimas noticias financieras</Text>
+        <View style={styles.newsContainer} lightColor="#eee" darkColor="#111">
+          <View
+            style={styles.emptyContainer}
+            lightColor="#eee"
+            darkColor="#111"
           >
-            {news.map((item, index) => (
-              <View key={index} style={styles.newsCardWrapper}>
-                <NewsCard news={item} />
-              </View>
-            ))}
-          </ScrollView>
-        )}
+            {getMaterialIcon("alert-circle-outline", "#F44336")}
+            <Text style={styles.emptyMessage}>
+              Error al cargar noticias financieras
+            </Text>
+          </View>
+        </View>
+      </View>
+    );
+  }
+
+  // News data available
+  return (
+    <View style={styles.container} lightColor="#eee" darkColor="#111">
+      <View style={styles.headerContainer} lightColor="#eee" darkColor="#111">
+        <Text style={styles.sectionTitle}>Últimas noticias financieras</Text>
+        {getMaterialIcon("newspaper", "#4CAF50", 24)}
+      </View>
+      <View style={styles.newsContainer}>
+        <ScrollView
+          style={styles.scrollView}
+          showsVerticalScrollIndicator={true}
+        >
+          {news.map((item, index) => (
+            <View key={index} style={styles.newsCardWrapper}>
+              <NewsCard news={item} />
+            </View>
+          ))}
+        </ScrollView>
       </View>
     </View>
   );
 }
+
+/**
+ * Returns a MaterialCommunityIcons component with specified properties
+ *
+ * @param {IconName} name - Name of the icon from MaterialCommunityIcons
+ * @param {string} color - Color of the icon in hex format
+ * @param {number} [size=ICON_SIZE] - Size of the icon in pixels
+ * @returns {React.ReactElement} MaterialCommunityIcons component
+ */
+const getMaterialIcon = (
+  name: IconName,
+  color: string,
+  size: number = ICON_SIZE,
+): React.ReactElement => {
+  return <MaterialCommunityIcons name={name} color={color} size={size} />;
+};
 
 /**
  * Styles for the NewsSection component.
@@ -84,16 +152,29 @@ const styles = StyleSheet.create({
    */
   container: {
     width: "100%",
+    alignItems: "center",
+    borderRadius: 8,
+    height: SECTION_HEIGHT + 48,
+  },
+
+  /**
+   * Container for the header with title and icon
+   */
+  headerContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    marginVertical: 8,
   },
 
   /**
    * Style for the section title.
    */
   sectionTitle: {
-    fontSize: 24,
+    fontSize: 18,
     fontWeight: "bold",
-    marginBottom: 16,
-    marginLeft: 16,
+    marginRight: 8,
+    backgroundColor: null,
   },
 
   /**
@@ -113,6 +194,15 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+    height: SECTION_HEIGHT,
+  },
+
+  /**
+   * Style for the loading text message.
+   */
+  loadingText: {
+    marginTop: 12,
+    fontSize: 16,
   },
 
   /**
@@ -124,16 +214,17 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     paddingHorizontal: 32,
+    height: SECTION_HEIGHT,
   },
 
   /**
    * Style for the empty state message.
    */
   emptyMessage: {
-    fontSize: 18,
+    marginTop: 12,
+    fontSize: 16,
     textAlign: "center",
-    color: "#666",
-    fontStyle: "italic",
+    color: "#f00",
   },
 
   /**
@@ -149,7 +240,5 @@ const styles = StyleSheet.create({
    */
   newsCardWrapper: {
     width: "100%",
-    marginBottom: 8,
-    paddingHorizontal: 8,
   },
 });

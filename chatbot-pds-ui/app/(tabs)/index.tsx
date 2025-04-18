@@ -1,26 +1,33 @@
-import { ActivityIndicator, StyleSheet } from "react-native";
+import { StyleSheet } from "react-native";
 import { Text, View } from "@/components/Themed";
 import WeatherSection from "@/components/weather/WeatherSection";
+import FinancialSection from "@/components/financial/FinancialSection";
 import { useEffect, useState } from "react";
-import { News, LocalizedWeather } from "@/interfaces";
+import { News, LocalizedWeather, RelevantFinancialData } from "@/interfaces";
 import NewsSection from "@/components/news/NewsSection";
 import {
   getCurrentWeather,
   getFinancialNewsByLocationUseCase,
+  getRelevantFinancialData,
 } from "@/use-cases";
 
 export default function TabOneScreen() {
   const [weatherLoading, setWeatherLoading] = useState(true);
-  const [weather, setWeather] = useState<LocalizedWeather | null>(null);
+  const [weather, setWeather] = useState<LocalizedWeather>(null);
   const [news, setNews] = useState<News[]>([]);
   const [newsLoading, setNewsLoading] = useState(true);
+  const [financialData, setFinancialData] =
+    useState<RelevantFinancialData>(null);
+  const [financialDataLoading, setFinancialDataLoading] = useState(true);
 
   // Cargar datos del clima
   useEffect(() => {
     const loadWeather = async () => {
       try {
         const data = await getCurrentWeather();
-        console.log(data);
+        if (!data) {
+          throw new Error("Weather data not found");
+        }
         setWeather(data);
       } catch (error) {
         console.error("Failed to fetch weather", error);
@@ -48,12 +55,64 @@ export default function TabOneScreen() {
     getNews();
   }, []);
 
+  // Cargar datos financieros relevantes
+  useEffect(() => {
+    const getFinancialData = async () => {
+      try {
+        setFinancialDataLoading(true);
+
+        const data = await getRelevantFinancialData();
+        setFinancialData(data);
+      } catch (error) {
+        console.error("Error fetching financial data:", error);
+      } finally {
+        setFinancialDataLoading(false);
+      }
+    };
+
+    getFinancialData();
+  }, []);
+
+  const capitalizeFirstLetter = (str: string) => {
+    return str.charAt(0).toUpperCase() + str.slice(1);
+  };
+
+  const today = new Date();
+
+  const formatDate = (date: Date) => {
+    const options: Intl.DateTimeFormatOptions = {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    };
+
+    return capitalizeFirstLetter(date.toLocaleDateString("es-CL", options));
+  };
+
   return (
     <View style={styles.container}>
-      {/* Sección del clima */}
-      <WeatherSection localizedWeather={weather} loading={weatherLoading} />
+      {/* Fecha de hoy formateada en texto */}
+      <Text style={styles.title}>{formatDate(today)}</Text>
+
+      {/* Separador */}
+      {/* Sección de clima y datos financieros */}
+      {/* Contenedor para clima y datos financieros */}
+      <View style={styles.topSectionsContainer}>
+        {/* Sección del clima */}
+        <WeatherSection localizedWeather={weather} loading={weatherLoading} />
+
+        {/* Sección financiera */}
+        <FinancialSection
+          financialData={financialData}
+          loading={financialDataLoading}
+        />
+      </View>
+
       {/* Sección de noticias */}
-      <NewsSection news={news} loading={newsLoading} />
+      <View style={styles.newsSectionsContainer}>
+        <NewsSection news={news} loading={newsLoading} />
+      </View>
     </View>
   );
 }
@@ -62,15 +121,24 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: "center",
-    justifyContent: "center",
+    justifyContent: "flex-start",
+    height: "100%",
+    paddingHorizontal: 4,
+  },
+  topSectionsContainer: {
+    flexDirection: "row",
+    marginVertical: 8,
+    marginHorizontal: 8,
+  },
+  newsSectionsContainer: {
+    flex: 1,
+    width: "100%",
+    alignItems: "center",
+    padding: 8,
   },
   title: {
     fontSize: 20,
+    margin: 8,
     fontWeight: "bold",
-  },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: "80%",
   },
 });
