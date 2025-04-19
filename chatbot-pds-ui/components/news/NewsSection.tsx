@@ -62,13 +62,13 @@ export default function NewsSection({
   // Loading state
   if (loading) {
     return (
-      <View style={styles.container} lightColor="#eee" darkColor="#111">
+      <View style={styles.container} lightColor="#fff" darkColor="#222">
         <Text style={styles.sectionTitle}>Últimas noticias financieras</Text>
-        <View style={styles.newsContainer} lightColor="#eee" darkColor="#111">
+        <View style={styles.newsContainer} lightColor="#fff" darkColor="#222">
           <View
             style={styles.loaderContainer}
-            lightColor="#eee"
-            darkColor="#111"
+            lightColor="#fff"
+            darkColor="#222"
           >
             <ActivityIndicator color="#00FF00" size="large" />
             <Text style={styles.loadingText}>
@@ -83,13 +83,13 @@ export default function NewsSection({
   // Empty state - no news available
   if (!news || news.length === 0) {
     return (
-      <View style={styles.container} lightColor="#eee" darkColor="#111">
+      <View style={styles.container} lightColor="#fff" darkColor="#222">
         <Text style={styles.sectionTitle}>Últimas noticias financieras</Text>
-        <View style={styles.newsContainer} lightColor="#eee" darkColor="#111">
+        <View style={styles.newsContainer} lightColor="#fff" darkColor="#222">
           <View
             style={styles.emptyContainer}
-            lightColor="#eee"
-            darkColor="#111"
+            lightColor="#fff"
+            darkColor="#222"
           >
             {getMaterialIcon("alert-circle-outline", "#F44336")}
             <Text style={styles.emptyMessage}>
@@ -103,8 +103,8 @@ export default function NewsSection({
 
   // News data available
   return (
-    <View style={styles.container} lightColor="#eee" darkColor="#111">
-      <View style={styles.headerContainer} lightColor="#eee" darkColor="#111">
+    <View style={styles.container} lightColor="#fff" darkColor="#222">
+      <View style={styles.headerContainer} lightColor="#fff" darkColor="#222">
         <Text style={styles.sectionTitle}>Últimas noticias financieras</Text>
         {getMaterialIcon("newspaper", "#4CAF50", 24)}
       </View>

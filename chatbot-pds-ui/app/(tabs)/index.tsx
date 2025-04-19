@@ -91,14 +91,14 @@ export default function TabOneScreen() {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={styles.container} lightColor="#f1f1f1">
       {/* Fecha de hoy formateada en texto */}
       <Text style={styles.title}>{formatDate(today)}</Text>
 
       {/* Separador */}
       {/* Sección de clima y datos financieros */}
       {/* Contenedor para clima y datos financieros */}
-      <View style={styles.topSectionsContainer}>
+      <View style={styles.topSectionsContainer} lightColor="#f1f1f1">
         {/* Sección del clima */}
         <WeatherSection localizedWeather={weather} loading={weatherLoading} />
 
@@ -110,7 +110,7 @@ export default function TabOneScreen() {
       </View>
 
       {/* Sección de noticias */}
-      <View style={styles.newsSectionsContainer}>
+      <View style={styles.newsSectionsContainer} lightColor="#f1f1f1">
         <NewsSection news={news} loading={newsLoading} />
       </View>
     </View>

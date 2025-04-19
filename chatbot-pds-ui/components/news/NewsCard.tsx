@@ -25,7 +25,7 @@ export default function NewsCard({ news }: { news: News }) {
 
   return (
     <TouchableOpacity onPress={handlePress} style={{ width: "100%" }}>
-      <View style={styles.container} lightColor="#eee" darkColor="#111">
+      <View style={styles.container} lightColor="#fff" darkColor="#222">
         <View style={styles.imageContainer}>
           <Image source={{ uri: image_uri }} style={styles.image} />
         </View>

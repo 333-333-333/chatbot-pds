@@ -92,11 +92,11 @@ export default function WeatherSection({
   // Loading state
   if (loading) {
     return (
-      <View style={styles.card} lightColor="#eee" darkColor="#111">
+      <View style={styles.card} lightColor="#fff" darkColor="#222">
         <View
           style={styles.loadingContainer}
-          lightColor="#eee"
-          darkColor="#111"
+          lightColor="#fff"
+          darkColor="#222"
         >
           <ActivityIndicator size="large" color="#0000ff" />
           <Text style={styles.loadingText}>Cargando datos meteorológicos</Text>
@@ -108,8 +108,8 @@ export default function WeatherSection({
   // Error state - no weather data available
   if (!localizedWeather) {
     return (
-      <View style={styles.card} lightColor="#eee" darkColor="#111">
-        <View style={styles.errorContainer} lightColor="#eee" darkColor="#111">
+      <View style={styles.card} lightColor="#fff" darkColor="#222">
+        <View style={styles.errorContainer} lightColor="#fff" darkColor="#222">
           {getMaterialIcon("alert-circle-outline", "#F44336", 40)}
           <Text style={styles.errorText}>Error al cargar datos climáticos</Text>
         </View>
@@ -128,16 +128,16 @@ export default function WeatherSection({
   const waterPercentIcon = getMaterialIcon("water", "#2196f3", INFO_ICON_SIZE);
 
   return (
-    <View style={styles.card} lightColor="#eee" darkColor="#111">
-      <View style={styles.container} lightColor="#eee" darkColor="#111">
+    <View style={styles.card} lightColor="#fff" darkColor="#222">
+      <View style={styles.container} lightColor="#fff" darkColor="#222">
         <Text style={styles.title}>{localizedWeather.location.city}</Text>
         <View
           style={styles.contentContainer}
-          lightColor="#eee"
-          darkColor="#111"
+          lightColor="#fff"
+          darkColor="#222"
         >
           <Text style={styles.icon}>{icon}</Text>
-          <View style={styles.infoContainer} lightColor="#eee" darkColor="#111">
+          <View style={styles.infoContainer} lightColor="#fff" darkColor="#222">
             <Text style={styles.infoText}>
               {thermometerIcon}
               {localizedWeather.temperatureCelsius.toFixed(0)}°C /{" "}

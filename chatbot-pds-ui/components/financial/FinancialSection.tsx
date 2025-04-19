@@ -70,11 +70,11 @@ export default function FinancialSection({
   // Vista de carga
   if (loading) {
     return (
-      <View style={styles.container} lightColor="#eee" darkColor="#111">
+      <View style={styles.container} lightColor="#fff" darkColor="#222">
         <View
           style={styles.loadingContainer}
-          lightColor="#eee"
-          darkColor="#111"
+          lightColor="#fff"
+          darkColor="#222"
         >
           <ActivityIndicator size="large" color="#0000ff" />
           <Text style={styles.messageText}>Cargando datos financieros...</Text>
@@ -86,8 +86,8 @@ export default function FinancialSection({
   // Vista de error
   if (!financialData) {
     return (
-      <View style={styles.container} lightColor="#eee" darkColor="#111">
-        <View style={styles.errorContainer} lightColor="#eee" darkColor="#111">
+      <View style={styles.container} lightColor="#fff" darkColor="#222">
+        <View style={styles.errorContainer} lightColor="#fff" darkColor="#222">
           {getMaterialIcon("alert-circle-outline", errorColor, ERROR_ICON_SIZE)}
           <Text style={[styles.messageText, { color: errorColor }]}>
             Error al cargar datos financieros
@@ -98,14 +98,14 @@ export default function FinancialSection({
   }
 
   return (
-    <View style={styles.container} lightColor="#eee" darkColor="#111">
-      <View style={styles.dataContainer} lightColor="#eee" darkColor="#111">
-        <View style={styles.dataRow} lightColor="#eee" darkColor="#111">
+    <View style={styles.container} lightColor="#fff" darkColor="#222">
+      <View style={styles.dataContainer} lightColor="#fff" darkColor="#222">
+        <View style={styles.dataRow} lightColor="#fff" darkColor="#222">
           {getDollarIcon(financialData.dolarValue)}
           <View
             style={styles.valueContainer}
-            lightColor="#eee"
-            darkColor="#111"
+            lightColor="#fff"
+            darkColor="#222"
           >
             <Text style={styles.label}>Valor dólar</Text>
             <Text style={styles.value}>
@@ -116,12 +116,12 @@ export default function FinancialSection({
           </View>
         </View>
 
-        <View style={styles.dataRow} lightColor="#eee" darkColor="#111">
+        <View style={styles.dataRow} lightColor="#fff" darkColor="#222">
           {getUFIcon(financialData.ufValue)}
           <View
             style={styles.valueContainer}
-            lightColor="#eee"
-            darkColor="#111"
+            lightColor="#fff"
+            darkColor="#222"
           >
             <Text style={styles.label}>Valor UF</Text>
             <Text style={styles.value}>
