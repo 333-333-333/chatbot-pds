@@ -139,7 +139,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 20,
-    margin: 8,
+    margin: 16,
     fontWeight: "bold",
   },
 });
