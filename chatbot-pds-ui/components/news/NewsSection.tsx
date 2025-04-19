@@ -63,18 +63,9 @@ export default function NewsSection({
   if (loading) {
     return (
       <View style={styles.container} lightColor="#fff" darkColor="#222">
-        <Text style={styles.sectionTitle}>Últimas noticias financieras</Text>
-        <View style={styles.newsContainer} lightColor="#fff" darkColor="#222">
-          <View
-            style={styles.loaderContainer}
-            lightColor="#fff"
-            darkColor="#222"
-          >
-            <ActivityIndicator color="#00FF00" size="large" />
-            <Text style={styles.loadingText}>
-              Cargando noticias financieras
-            </Text>
-          </View>
+        <View style={styles.loaderContainer} lightColor="#fff" darkColor="#222">
+          <ActivityIndicator color="#00FF00" size="large" />
+          <Text style={styles.loadingText}>Cargando noticias financieras</Text>
         </View>
       </View>
     );
@@ -84,18 +75,11 @@ export default function NewsSection({
   if (!news || news.length === 0) {
     return (
       <View style={styles.container} lightColor="#fff" darkColor="#222">
-        <Text style={styles.sectionTitle}>Últimas noticias financieras</Text>
-        <View style={styles.newsContainer} lightColor="#fff" darkColor="#222">
-          <View
-            style={styles.emptyContainer}
-            lightColor="#fff"
-            darkColor="#222"
-          >
-            {getMaterialIcon("alert-circle-outline", "#F44336")}
-            <Text style={styles.emptyMessage}>
-              Error al cargar noticias financieras
-            </Text>
-          </View>
+        <View style={styles.emptyContainer} lightColor="#fff" darkColor="#222">
+          {getMaterialIcon("alert-circle-outline", "#F44336")}
+          <Text style={styles.emptyMessage}>
+            Error al cargar noticias financieras
+          </Text>
         </View>
       </View>
     );
@@ -154,7 +138,7 @@ const styles = StyleSheet.create({
     width: "100%",
     alignItems: "center",
     borderRadius: 8,
-    height: SECTION_HEIGHT + 48,
+    height: SECTION_HEIGHT + 60,
   },
 
   /**
@@ -174,7 +158,8 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "bold",
     marginRight: 8,
-    backgroundColor: null,
+    paddingVertical: 8,
+    backgroundColor: "transparent",
   },
 
   /**
@@ -184,6 +169,7 @@ const styles = StyleSheet.create({
   newsContainer: {
     height: SECTION_HEIGHT,
     width: "100%",
+    backgroundColor: "transparent",
   },
 
   /**
@@ -215,6 +201,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingHorizontal: 32,
     height: SECTION_HEIGHT,
+    backgroundColor: "transparent",
   },
 
   /**
@@ -224,7 +211,7 @@ const styles = StyleSheet.create({
     marginTop: 12,
     fontSize: 16,
     textAlign: "center",
-    color: "#f00",
+    color: "#F44436",
   },
 
   /**
@@ -232,6 +219,7 @@ const styles = StyleSheet.create({
    */
   scrollView: {
     width: "100%",
+    backgroundColor: "transparent",
   },
 
   /**

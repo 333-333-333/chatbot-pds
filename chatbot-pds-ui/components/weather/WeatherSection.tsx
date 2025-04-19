@@ -155,21 +155,6 @@ export default function WeatherSection({
 }
 
 /**
- * Returns a formatted date string in the local language format
- *
- * @returns {string} Formatted date string (e.g. "Monday, January 1, 2023")
- */
-const getFormattedDate = (): string => {
-  const now = new Date();
-  return now.toLocaleDateString(undefined, {
-    weekday: "long",
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
-};
-
-/**
  * Returns the appropriate weather icon based on weather condition and time of day
  *
  * @param {any} condition - Weather condition code (e.g. "clear_sky", "rain")
@@ -260,10 +245,11 @@ const getMaterialIcon = (
 const styles = StyleSheet.create({
   card: {
     borderRadius: 8,
-    padding: 20,
-    marginHorizontal: 16,
+    padding: 16,
     height: 140,
     width: 220,
+    alignItems: "center",
+    justifyContent: "center",
   },
   container: {
     alignItems: "center",
@@ -296,6 +282,7 @@ const styles = StyleSheet.create({
   contentContainer: {
     flexDirection: "row",
     alignItems: "center",
+    paddingVertical: 8,
   },
   icon: {
     fontSize: 64,

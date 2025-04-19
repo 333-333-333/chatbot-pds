@@ -16,7 +16,6 @@ type IconName =
 
 // Constantes para tamaños de íconos
 const INFO_ICON_SIZE = 20;
-const MAIN_ICON_SIZE = 70;
 const ERROR_ICON_SIZE = 40;
 
 interface FinancialSectionProps {
@@ -29,13 +28,9 @@ export default function FinancialSection({
   loading = false,
 }: FinancialSectionProps): JSX.Element {
   // Colores fijos sin useThemeColor
-  const textColor = "#000";
   const subtitleColor = "#666";
   const mainIconColor = "#2f95dc";
   const errorColor = "#F44336";
-
-  // Obtener fecha actual en formato DD/MM/AAAA
-  const currentDate = format(new Date(), "dd/MM/yyyy");
 
   // Función para obtener íconos con estilo adecuado
   const getMaterialIcon = (name: IconName, color: string, size: number) => (
@@ -99,37 +94,27 @@ export default function FinancialSection({
 
   return (
     <View style={styles.container} lightColor="#fff" darkColor="#222">
-      <View style={styles.dataContainer} lightColor="#fff" darkColor="#222">
-        <View style={styles.dataRow} lightColor="#fff" darkColor="#222">
-          {getDollarIcon(financialData.dolarValue)}
-          <View
-            style={styles.valueContainer}
-            lightColor="#fff"
-            darkColor="#222"
-          >
-            <Text style={styles.label}>Valor dólar</Text>
-            <Text style={styles.value}>
-              {financialData.dolarValue !== null
-                ? `$${financialData.dolarValue.toLocaleString("es-CL")}`
-                : "Sin datos"}
-            </Text>
-          </View>
+      <View style={styles.dataRow} lightColor="#fff" darkColor="#222">
+        {getDollarIcon(financialData.dolarValue)}
+        <View style={styles.valueContainer} lightColor="#fff" darkColor="#222">
+          <Text style={styles.label}>Dólar</Text>
+          <Text style={styles.value}>
+            {financialData.dolarValue !== null
+              ? `$${Math.round(financialData.dolarValue).toLocaleString("es-CL")}`
+              : "Sin datos"}
+          </Text>
         </View>
+      </View>
 
-        <View style={styles.dataRow} lightColor="#fff" darkColor="#222">
-          {getUFIcon(financialData.ufValue)}
-          <View
-            style={styles.valueContainer}
-            lightColor="#fff"
-            darkColor="#222"
-          >
-            <Text style={styles.label}>Valor UF</Text>
-            <Text style={styles.value}>
-              {financialData.ufValue !== null
-                ? `$${financialData.ufValue.toLocaleString("es-CL")}`
-                : "Sin datos"}
-            </Text>
-          </View>
+      <View style={styles.dataRow} lightColor="#fff" darkColor="#222">
+        {getUFIcon(financialData.ufValue)}
+        <View style={styles.valueContainer} lightColor="#fff" darkColor="#222">
+          <Text style={styles.label}>UF</Text>
+          <Text style={styles.value}>
+            {financialData.ufValue !== null
+              ? `$${Math.round(financialData.ufValue).toLocaleString("es-CL")}`
+              : "Sin datos"}
+          </Text>
         </View>
       </View>
     </View>
@@ -138,37 +123,31 @@ export default function FinancialSection({
 
 const styles = StyleSheet.create({
   container: {
-    width: 140, // Ancho menor, como en el otro componente
-    borderRadius: 12,
+    width: 140,
+    borderRadius: 8,
     padding: 16,
-    height: 140, // Altura fija igual al otro componente
+    height: 140,
     justifyContent: "space-between",
-    marginHorizontal: 16, // Igual que el otro componente
-  },
-  cardHeader: {
-    flexDirection: "row",
-    justifyContent: "flex-end",
+    alignItems: "flex-start",
   },
   icon: {
     marginRight: 4,
   },
-  dataContainer: {
-    marginTop: 12,
-  },
   dataRow: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 8,
+    justifyContent: "flex-start",
   },
   valueContainer: {
     marginLeft: 4,
+    alignItems: "flex-start",
   },
   label: {
-    fontSize: 14,
+    fontSize: 16,
     fontWeight: "bold",
   },
   value: {
-    fontSize: 14,
+    fontSize: 16,
   },
   // Nuevos estilos para estados de carga y error, idénticos al otro componente
   loadingContainer: {
