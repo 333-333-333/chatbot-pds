@@ -3,47 +3,65 @@ import { ChatBubble, ChatInput } from "@/components/chat";
 import { FlatList, StyleSheet } from "react-native";
 import { ChatMessage } from "@/interfaces";
 import { useState } from "react";
+import { getChatbotResponseUseCase } from "@/use-cases";
 
 export default function TabTwo() {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [inputText, setInputText] = useState("");
   const [isDisabled, setIsDisabled] = useState(false);
 
-  const handleSend = () => {
+  const handleSend = async () => {
     if (!inputText.trim()) return;
 
-    const userMsg: ChatMessage = {
+    const userMsg = {
       id: Date.now().toString(),
-      text: inputText,
+      content: inputText,
       isUser: true,
     };
 
-    const botPlaceholder: ChatMessage = {
+    const botPlaceholder = {
       id: Date.now().toString() + "_bot",
-      text: "",
+      content: "",
       isUser: false,
       isLoading: true,
     };
 
     setMessages((prev) => [...prev, userMsg, botPlaceholder]);
-    setInputText("");
     setIsDisabled(true);
 
-    // Simular respuesta del bot
-    setTimeout(() => {
+    try {
+      const botResponse = await getChatbotResponseUseCase(inputText);
+
+      setInputText("");
       setMessages((prev) =>
         prev.map((msg) =>
           msg.id === botPlaceholder.id
             ? {
                 ...msg,
-                text: "Esta es una respuesta simulada.",
+                content: botResponse.content,
                 isLoading: false,
               }
             : msg,
         ),
       );
+    } catch (error) {
+      // Manejar errores en la respuesta
+      setMessages((prev) =>
+        prev.map((msg) =>
+          msg.id === botPlaceholder.id
+            ? {
+                ...msg,
+                content:
+                  "Lo siento, ha ocurrido un error al procesar tu mensaje.",
+                isLoading: false,
+              }
+            : msg,
+        ),
+      );
+      console.error("Error getting chatbot response:", error);
+    } finally {
       setIsDisabled(false);
-    }, 2000);
+    }
   };
 
   return (
@@ -56,7 +74,7 @@ export default function TabTwo() {
             style={{ paddingHorizontal: 8, backgroundColor: "transparent" }}
           >
             <ChatBubble
-              message={item.text}
+              message={item.content}
               isUser={item.isUser}
               isLoading={item.isLoading}
             />
