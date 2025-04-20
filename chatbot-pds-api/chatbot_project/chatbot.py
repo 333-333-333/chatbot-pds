@@ -12,13 +12,20 @@ from modules.weather import obtener_clima
 # Cargar el modelo en español de spaCy
 nlp = spacy.load("es_core_news_sm")
 
-# Función principal del chatbot
-# Esta función recibe un texto y devuelve una respuesta basada en el contenido del texto
-# y en las funciones de los módulos importados.
-# Se han añadido comentarios para explicar cada parte del código.
+def presentacion_bot():
+    return(
+        " 🤖 Hola, soy un chatbot .\n"
+        " 🤖 Puedo ayurdarte con varias cosas como:\n"
+        " 🤖 -Consultar el precio del dolar o de la UF  \n"
+        " 🤖 -Consultar el clima de tu ciudad  \n"
+        " 🤖 -Mostrarte las últimas noticias  \n"
+        " 🤖 Solo pregúntame lo que necesites y estaré encantado de ayudarte.  \n"
+    )
 
 def chatbot_response(text):
-    text= text.lower()  # Convertir el texto a minúsculas para facilitar la comparación
+    text= text.lower() 
+    if any(saludo in text for saludo in ["hola", "buenas", "hey", "holi"]):
+        return presentacion_bot() 
     responses={
         "hola":"hola, ¿cómo estás?",
         "adios":"adiós, ¡que tengas un buen día!",
