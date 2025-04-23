@@ -39,7 +39,29 @@ def chatbot_response(text):
         if key in text:
             return value() if callable(value) else value
         
-    return "Lo siento, no entiendo tu pregunta. ¿Puedes reformularla?"
+    return fallback_response(text)
+
+def fallback_response(text):
+    doc = nlp(text)
+    sustantivos = [token.text for token in doc if token.pos_ == "NOUN"]
+
+    mensaje = (
+        "Lo siento, aún no puedo ayudarte con eso 🤔.\n"
+        "¿Podrías reformular tu pregunta? 🥺\n"
+    )
+
+    if sustantivos:
+        mensaje += f"He notado que mencionas: {', '.join(sustantivos)} 🔎\n"
+
+    mensaje += (
+        "📚 Actualmente puedo ayudarte con lo siguiente:\n"
+        "• Valor del dólar\n"
+        "• Valor de la UF\n"
+        "• El clima de tu ciudad\n"
+        "• Noticias financieras recientes\n"
+    )
+
+    return mensaje
 
 # Interacción con el usuario
 # Se inicia un bucle que permite al usuario interactuar con el chatbot
