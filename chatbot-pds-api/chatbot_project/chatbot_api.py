@@ -1,5 +1,6 @@
 import string
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 import logging
 import spacy
 import re
@@ -9,6 +10,8 @@ from modules.news import obtener_noticias
 from modules.weather import obtener_clima
 
 app = Flask(__name__)
+CORS(app)
+
 nlp = spacy.load("es_core_news_sm")
 nlp_md = spacy.load("es_core_news_md")
 
