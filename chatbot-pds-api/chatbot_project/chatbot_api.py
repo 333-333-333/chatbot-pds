@@ -1,3 +1,4 @@
+import string
 from flask import Flask, request, jsonify
 import logging
 import spacy
@@ -9,6 +10,7 @@ from modules.weather import obtener_clima
 
 app = Flask(__name__)
 nlp = spacy.load("es_core_news_sm")
+nlp_md = spacy.load("es_core_news_md")
 
 def presentacion_bot():
     return(
@@ -50,25 +52,69 @@ intenciones={
         },
         "clima": {
             "triggers": ["clima", "tiempo", "pronóstico del tiempo", "estado del tiempo"],
-            "respuesta": obtener_clima
+            "respuesta": None
         }
     }
 
-def chatbot_response(text):
-    text = text.lower()
+
+def chatbot_response(text) -> dict:
+    text = _simplificar_texto(text)
     logging.info(f"[🧪 Texto recibido]: {text}")
 
     for nombre_intencion, intencion in intenciones.items():
         logging.info(f"🔍 Probando intención: {nombre_intencion}")
+
         for trigger in intencion["triggers"]:
             pattern = r'\b' + re.escape(trigger) + r'\b'
             logging.info(f"   👉 ¿regex '{pattern}' en '{text}'?")
             if re.search(pattern, text):
                 logging.info(f"✅ Coincidencia con: {trigger}")
+
+                if nombre_intencion == "clima":
+                    lugar = _extraer_lugar(text)
+                    logging.info(f"Lugar extraído de la petición de clima: {lugar}")
+                    return obtener_clima(lugar)
+
                 respuesta = intencion["respuesta"]
                 return respuesta() if callable(respuesta) else respuesta
 
     return "Lo siento, no entiendo tu pregunta. ¿Puedes reformularla? 🥺"
+
+
+reemplazos = {
+    "á": "a",
+    "é": "e",
+    "í": "i",
+    "ó": "o",
+    "ú": "u",
+    "ü": "u"
+}
+
+def _simplificar_texto(texto: str) -> str:
+    resultado = _quitar_puntuacion(texto)
+    resultado = resultado.lower()
+
+    for original, reemplazo in reemplazos.items():
+        resultado = resultado.replace(original, reemplazo)
+    
+    return resultado
+
+
+def _quitar_puntuacion(texto: str) -> str:
+    return re.sub(rf"[{re.escape(string.punctuation)}¿¡«»]", "", texto)
+
+
+def _extraer_lugar(texto: str) -> str:
+    doc = nlp_md(texto)
+    lugar = "temuco (default)"
+
+    for ent in doc.ents:
+        if ent.label_ in ("LOC", "GPE"):
+            lugar = ent.text
+            break
+    
+    return lugar.strip()
+
 
 @app.route('/bienvenida', methods=['GET'])
 def mensaje_bienvenida():
