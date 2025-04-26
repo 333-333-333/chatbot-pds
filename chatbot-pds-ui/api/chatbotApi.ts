@@ -37,7 +37,7 @@ export class ChatbotApi {
           "Content-Type": "application/json",
           Accept: "application/json",
         },
-        body: JSON.stringify({ prompt }),
+        body: JSON.stringify({ texto: prompt }),
       });
 
       if (!response.ok) {
