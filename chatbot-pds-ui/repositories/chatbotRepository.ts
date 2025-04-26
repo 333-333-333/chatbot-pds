@@ -16,7 +16,7 @@ export class ChatbotRepository {
    * @returns {Promise<any>} A promise that resolves to the chatbot response.
    * @throws {Error} If the API request fails or returns an error status code.
    */
-  public async getChatbotResponse(prompt: string): Promise<ChatbotMessage> {
+  public async getChatbotResponse(prompt: string): Promise<ChatMessage> {
     try {
       const response = await this.chatbotApi.getChatbotResponse(prompt);
       if (!response) {
@@ -26,6 +26,25 @@ export class ChatbotRepository {
     } catch (error) {
       console.error("Error in ChatbotRepository:", error);
       throw new Error("Failed to fetch chatbot response");
+    }
+  }
+
+  /**
+   * Fetches the welcome message from the API.
+   *
+   * @returns {Promise<any>} A promise that resolves to the welcome message.
+   * @throws {Error} If the API request fails or returns an error status code.
+   */
+  public async getWelcomeMessage(): Promise<ChatMessage> {
+    try {
+      const response = await this.chatbotApi.getWelcomeMessage();
+      if (!response) {
+        throw new Error("No welcome message received from the API");
+      }
+      return mapToChatMessage(response);
+    } catch (error) {
+      console.error("Error in ChatbotRepository:", error);
+      throw new Error("Failed to fetch welcome message");
     }
   }
 }
