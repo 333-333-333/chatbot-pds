@@ -5,6 +5,8 @@ on:
     branches:
       - feature/chatbot_victor
       - develop
+    paths:
+        - "chatbot-pds-api/**"
 
 jobs:
   deploy:

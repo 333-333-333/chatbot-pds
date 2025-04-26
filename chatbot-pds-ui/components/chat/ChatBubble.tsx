@@ -1,5 +1,7 @@
 import { View, Text } from "@/components/Themed";
+import { LocalizedWeather } from "@/interfaces";
 import { ActivityIndicator, StyleSheet } from "react-native";
+import WeatherSection from "../weather/WeatherSection";
 
 /**
  * Props for the ChatBubble component.
@@ -9,7 +11,7 @@ import { ActivityIndicator, StyleSheet } from "react-native";
  * @property {boolean} [isLoading] - Optional flag to show loading state instead of message content
  */
 interface ChatBubbleProps {
-  message: string;
+  message: any;
   isUser: boolean;
   isLoading?: boolean;
 }
@@ -56,11 +58,41 @@ export function ChatBubble({
         {isLoading ? (
           <ActivityIndicator size="small" color="#00f" />
         ) : (
-          <Text style={styles.message}>{message}</Text>
+          <BubbleContent content={message} />
         )}
       </View>
     </View>
   );
+}
+
+interface BubbleContentProps {
+  content: any;
+}
+
+function BubbleContent({ content }: BubbleContentProps): React.ReactElement {
+  console.log(content);
+
+  if (typeof content === "string") {
+    return <Text style={styles.message}>{content}</Text>;
+  }
+
+  if (typeof content === "object" && content.tipo === "clima") {
+    const message: string = content.mensaje;
+    const weather: LocalizedWeather = content.datos;
+
+    if (!weather) {
+      return <Text style={styles.message}>{message}</Text>;
+    }
+
+    return (
+      <View style={styles.weatherContainer}>
+        <Text style={styles.message}>{message}</Text>
+        <WeatherSection localizedWeather={weather} loading={false} />
+      </View>
+    );
+  }
+
+  return <></>;
 }
 
 /**
@@ -98,5 +130,10 @@ const styles = StyleSheet.create({
   },
   botLabel: {
     textAlign: "right",
+  },
+  weatherContainer: {
+    backgroundColor: "transparent",
+    alignItems: "center",
+    gap: 16,
   },
 });
