@@ -3,7 +3,8 @@ name: Deploy to Server
 on:
   push:
     branches:
-      - feature/deployment
+      - feature/chatbot_victor
+      - develop
 
 jobs:
   deploy:
