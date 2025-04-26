@@ -23,23 +23,49 @@ def presentacion_bot():
     )
 
 def chatbot_response(text):
-    text= text.lower() 
+    text = text.lower()
+
     if any(saludo in text for saludo in ["hola", "buenas", "hey", "holi"]):
-        return presentacion_bot() 
-    responses={
-        "hola":"hola, ¿cómo estás?",
-        "adios":"adiós, ¡que tengas un buen día!",
-        "como estas":"estoy bien, gracias por preguntar.",
+        return presentacion_bot()
+
+    responses = {
+        "hola": "hola, ¿cómo estás?",
+        "adios": "adiós, ¡que tengas un buen día!",
+        "cómo estás": "estoy bien, gracias por preguntar.",
         "dólar": obtener_dolar,
         "uf": obtener_uf,
-        "noticias": obtener_noticias,
         "clima": obtener_clima,
     }
-    for key,value in responses.items():
+
+    # Si detectamos "noticias", miramos si también dice un país
+    if "noticias" in text:
+        # Mapear nombres de países a códigos ISO
+        paises = {
+            "chile": "cl",
+            "argentina": "ar",
+            "mexico": "mx",
+            "colombia": "co",
+            "españa": "es",
+            "eeuu": "us",
+            "estados unidos": "us",
+            "brasil": "br",
+        }
+
+        # Buscar si el texto contiene alguno de los países
+        for nombre_pais, codigo_pais in paises.items():
+            if nombre_pais in text:
+                return obtener_noticias(codigo_pais)
+        
+        # Si no detecta país específico, devuelve noticias de EEUU
+        return obtener_noticias()
+
+    # Resto de las respuestas normales
+    for key, value in responses.items():
         if key in text:
             return value() if callable(value) else value
-        
+
     return "Lo siento, no entiendo tu pregunta. ¿Puedes reformularla?"
+
 
 # Interacción con el usuario
 # Se inicia un bucle que permite al usuario interactuar con el chatbot
