@@ -1,40 +1,137 @@
-# Importar la biblioteca requests para realizar solicitudes HTTP
+import logging
+import random
 import requests
-
-# Importar os y dotenv para manejar variables de entorno
 import os
+import time
+
+from dataclasses import dataclass
+from typing import Literal
+from urllib.parse import quote
 from dotenv import load_dotenv
 
-# Cargar variables del archivo .env
 load_dotenv()
+_API_KEY = os.getenv("WEATHER_API_KEY")
+_TIPO = "clima"
+_RESPUESTAS_POSITIVAS = [
+    "¡Por supuesto! Aquí tienes el clima en {}.",
+    "Claro, a continuación tienes el clima actual en {}.",
+    "Aquí está el pronóstico para {}.",
+    "¡Con gusto! Este es el clima en {}.",
+    "Esto es lo que encontré sobre el clima en {}:",
+    "Aquí tienes el estado del clima en {}."
+]
+_RESPUESTAS_NEGATIVAS = [
+    "Lo siento, no pude obtener el clima para {}.",
+    "No encontré información del tiempo en {}. ¿Podrías verificar el nombre?",
+    "No pude obtener el clima de {}. ¿Quieres probar con otro lugar?",
+    "Disculpa, no pude localizar el pronóstico para {}.",
+    "Parece que {} no está en mi base de datos de clima.",
+    "No tengo información actualizada del clima en {}."
+]
 
-# Función para obtener el clima de Santiago
-def obtener_clima():
+Condition = Literal[
+    "clear_sky",
+    "few_clouds",
+    "clouds",
+    "drizzle",
+    "rain",
+    "thunderstorm",
+    "snow",
+    "mist",
+    "unknown"
+]
+
+TimeOfDay = Literal["day", "night"]
+
+@dataclass
+class Location:
+    city: str
+    countryCode: str
+
+@dataclass
+class LocalizedWeather:
+    condition: Condition
+    timeOfDay: TimeOfDay
+    temperatureCelsius: float
+    temperatureFahrenheit: float
+    humidity: int
+    location: Location
+
+def obtener_clima(lugar: str) -> dict:    
+    es_lugar_desconocido = lugar == "temuco (default)"
+
+    if es_lugar_desconocido:
+        lugar = "temuco"
     
-    # Configuración de la API de OpenWeatherMap
-    
-    API_KEY = os.getenv("OPENWEATHER_API_KEY")  # Obtener la clave API desde el archivo .env
-    ciudad = "Santiago"     # Ciudad por defecto (Santiago)
-    url = f"http://api.openweathermap.org/data/2.5/weather?q={ciudad}&appid={API_KEY}&units=metric&lang=es" # URL para obtener el clima de la ciudad especificada en español y en grados Celsius
+    lugar = lugar.title()
+    url = f"https://api.openweathermap.org/data/2.5/weather?appid={_API_KEY}&q={quote(lugar)}&units=metric"
 
     try:
-        # Realizar la solicitud a la API
         response = requests.get(url)
         data = response.json()
         
-        # Verificar si la respuesta es exitosa (código 200)
-        # y extraer la información del clima
-        # Si la ciudad no es válida, se devuelve un mensaje de error
-        # Si la ciudad es válida, se extraen los datos de temperatura, descripción y humedad
-        # y se devuelve un mensaje formateado con la información del clima
-        
         if data["cod"] == 200:
-            temperatura = data["main"]["temp"]
-            descripcion = data["weather"][0]["description"]
-            humedad = data["main"]["humidity"]
-            return f"El clima en {ciudad} es {descripcion} con una temperatura de {temperatura}°C y humedad del {humedad}%."
+            mensaje = "No entendí el lugar que proporcionaste, pero te dejo el clima en Temuco." if es_lugar_desconocido else random.choice(_RESPUESTAS_POSITIVAS)
+            temperatureCelsius = data["main"]["temp"]
+            lugar = data["name"]
+
+            datos = LocalizedWeather(
+                condition=_parse_condition(data["weather"]),
+                timeOfDay=_parse_time_of_day(data["sys"]),
+                temperatureCelsius=temperatureCelsius,
+                temperatureFahrenheit=(temperatureCelsius * 9) / 5 + 32,
+                humidity=data["main"]["humidity"],
+                location=Location(city=lugar, countryCode=data["sys"]["country"])
+            )
+
+            return {
+                "tipo": _TIPO,
+                "mensaje": mensaje.format(lugar),
+                "datos": datos
+            }
         else:
-            return f"No pude obtener el clima de {ciudad}. Error: {data.get('message', 'Desconocido')}"
+            logging.error(f"Error: {data.get('message', 'Desconocido')}")
+            return {
+                "tipo": _TIPO,
+                "mensaje": random.choice(_RESPUESTAS_NEGATIVAS).format(lugar),
+                "datos": {}
+            }
     
     except Exception as e:
-        return f"No pude obtener el clima. Error: {e}"
+        logging.error(f"Error: {e}")
+        return {
+            "tipo": _TIPO,
+            "mensaje": random.choice(_RESPUESTAS_NEGATIVAS).format(lugar),
+            "datos": {}
+        }
+
+
+def _parse_condition(weather: list[dict]) -> Condition:
+    main = weather[0]["main"]
+    description = weather[0]["description"]
+
+    if main == "Clear":
+        return "clear_sky"
+    elif main == "Clouds":
+        if "few clouds" in description:
+            return "few_clouds"
+        return "clouds"
+    elif main == "Drizzle":
+        return "drizzle"
+    elif main == "Rain":
+        return "rain"
+    elif main == "Thunderstorm":
+        return "thunderstorm"
+    elif main == "Snow":
+        return "snow"
+    elif main == "Mist":
+        return "mist"
+    else:
+        return "unknown"
+
+def _parse_time_of_day(sys: dict) -> TimeOfDay:
+    sunrise = sys["sunrise"]
+    sunset = sys["sunset"]
+    now = int(time.time())
+
+    return "day" if sunrise <= now < sunset else "night"
