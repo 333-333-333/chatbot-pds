@@ -19,9 +19,11 @@ export class ChatbotRepository {
   public async getChatbotResponse(prompt: string): Promise<ChatMessage> {
     try {
       const response = await this.chatbotApi.getChatbotResponse(prompt);
+
       if (!response) {
         throw new Error("No response received from the API");
       }
+
       return mapToChatMessage(response);
     } catch (error) {
       console.error("Error in ChatbotRepository:", error);
