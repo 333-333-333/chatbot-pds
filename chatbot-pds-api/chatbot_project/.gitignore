@@ -6,3 +6,8 @@
 
 # Environment variables
 .env
+
+# Test reports
+test_report/
+.coverage
+coverage_report/
