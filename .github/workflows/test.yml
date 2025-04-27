@@ -27,21 +27,17 @@ jobs:
 
       - name: Install dependencies
         run: |
+          cd chatbot-pds-api/chatbot_project/
           pip install -r requirements.txt
 
       - name: Run tests with coverage
         run: |
-          pytest --html=test_report/index.html --cov=modules --cov-report=html:coverage_report
-
-      - name: Create zip files of the reports
-        run: |
-          zip -r test_report.zip test_report/
-          zip -r coverage_report.zip coverage_report/
+          pytest --html=test_report/index.html --cov=modules --cov-report=html:coverage_report || true
 
       - name: Upload the reports as artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: test-reports
           path: |
-            test_report.zip
-            coverage_report.zip
+            test_report/
+            coverage_report/
