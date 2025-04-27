@@ -36,7 +36,7 @@ def handle_chat():
     return jsonify({"respuesta": response})
 
 
-intenciones={
+intenciones = {
         "saludo": {
             "triggers": ["hola","ola", "buenas", "hey", "holi","hi","hello"],
             "respuesta": lambda: presentacion_bot()
