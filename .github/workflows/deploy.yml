@@ -1,9 +1,13 @@
-name: Deploy to Server
+name: Deploy to server
 
 on:
   push:
     branches:
-      - feature/chatbot_victor
+      - develop
+    paths:
+        - "chatbot-pds-api/**"
+  pull_request:
+    branches:
       - develop
     paths:
         - "chatbot-pds-api/**"
