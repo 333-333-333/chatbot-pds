@@ -92,6 +92,10 @@ function BubbleContent({ content }: BubbleContentProps): React.ReactElement {
     );
   }
 
+  if (typeof content === "object" && content.tipo === "error") {
+    return <Text style={styles.message}>⚠️{content.mensaje}⚠️</Text>;
+  }
+
   return <></>;
 }
 

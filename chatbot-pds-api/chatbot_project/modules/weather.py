@@ -11,7 +11,6 @@ from dotenv import load_dotenv
 
 load_dotenv()
 _API_KEY = os.getenv("WEATHER_API_KEY")
-_TIPO = "clima"
 _RESPUESTAS_POSITIVAS = [
     "¡Por supuesto! Aquí tienes el clima en {}.",
     "Claro, a continuación tienes el clima actual en {}.",
@@ -67,7 +66,7 @@ def obtener_clima(lugar: str) -> dict:
     url = f"https://api.openweathermap.org/data/2.5/weather?appid={_API_KEY}&q={quote(lugar)}&units=metric"
 
     try:
-        response = requests.get(url)
+        response = requests.get(url, timeout=20)
         data = response.json()
         
         if data["cod"] == 200:
@@ -85,22 +84,29 @@ def obtener_clima(lugar: str) -> dict:
             )
 
             return {
-                "tipo": _TIPO,
+                "tipo": "clima",
                 "mensaje": mensaje.format(lugar),
                 "datos": datos
             }
         else:
             logging.error(f"Error: {data.get('message', 'Desconocido')}")
             return {
-                "tipo": _TIPO,
+                "tipo": "error",
                 "mensaje": random.choice(_RESPUESTAS_NEGATIVAS).format(lugar),
                 "datos": {}
             }
     
+    except requests.exceptions.Timeout:
+        return {
+            "tipo": "error",
+            "mensaje": "La solicitud tardó más de lo esperado. Inténtalo de nuevo más tarde.",
+            "datos": {}
+        }
+    
     except Exception as e:
         logging.error(f"Error: {e}")
         return {
-            "tipo": _TIPO,
+            "tipo": "error",
             "mensaje": random.choice(_RESPUESTAS_NEGATIVAS).format(lugar),
             "datos": {}
         }
