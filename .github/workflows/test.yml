@@ -39,7 +39,7 @@ jobs:
           zip -r coverage_report.zip coverage_report/
 
       - name: Upload the reports as artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: test-reports
           path: |
