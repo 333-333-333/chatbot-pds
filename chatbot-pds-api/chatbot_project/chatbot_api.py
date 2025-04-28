@@ -68,7 +68,29 @@ def chatbot_response(text):
                 respuesta = intencion["respuesta"]
                 return respuesta() if callable(respuesta) else respuesta
 
-    return "Lo siento, no entiendo tu pregunta. ¿Puedes reformularla? 🥺"
+    return fallback_response(text)
+
+def fallback_response(text):
+    doc = nlp(text)
+    sustantivos = [token.text for token in doc if token.pos_ == "NOUN"]
+
+    mensaje = (
+        "Lo siento, aún no puedo ayudarte con eso 🤔.\n"
+        "¿Podrías reformular tu pregunta? 🥺\n"
+    )
+
+    if sustantivos:
+        mensaje += f"• He notado que mencionas: {', '.join(sustantivos)} 🔎\n"
+
+    mensaje += (
+        "📚 Actualmente puedo ayudarte con lo siguiente:\n"
+        "• Valor del dólar\n"
+        "• Valor de la UF\n"
+        "• El clima de tu ciudad\n"
+        "• Noticias financieras recientes\n"
+    )
+
+    return mensaje
 
 @app.route('/bienvenida', methods=['GET'])
 def mensaje_bienvenida():
