@@ -1,14 +1,31 @@
-import { View, Text } from "@/components/Themed";
+import { View } from "@/components/Themed";
 import { ChatBubble, ChatInput } from "@/components/chat";
 import { FlatList, StyleSheet } from "react-native";
 import { ChatMessage } from "@/interfaces";
-import { useState } from "react";
-import { getChatbotResponseUseCase } from "@/use-cases";
+import { useState, useEffect } from "react";
+import {
+  getChatbotResponseUseCase,
+  getChatbotWelcomeUseCase,
+} from "@/use-cases";
 
 export default function TabTwo() {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [inputText, setInputText] = useState("");
   const [isDisabled, setIsDisabled] = useState(false);
+
+  // Cargar el mensaje de bienvenida cuando se monta el componente
+  useEffect(() => {
+    const loadWelcomeMessage = async () => {
+      try {
+        const welcomeMessage = await getChatbotWelcomeUseCase();
+        setMessages([welcomeMessage]);
+      } catch (error) {
+        console.error("Error loading welcome message:", error);
+      }
+    };
+
+    loadWelcomeMessage();
+  }, []);
 
   const handleSend = async () => {
     if (!inputText.trim()) return;
@@ -27,12 +44,12 @@ export default function TabTwo() {
     };
 
     setMessages((prev) => [...prev, userMsg, botPlaceholder]);
+    setInputText("");
     setIsDisabled(true);
 
     try {
       const botResponse = await getChatbotResponseUseCase(inputText);
 
-      setInputText("");
       setMessages((prev) =>
         prev.map((msg) =>
           msg.id === botPlaceholder.id
@@ -45,7 +62,6 @@ export default function TabTwo() {
         ),
       );
     } catch (error) {
-      // Manejar errores en la respuesta
       setMessages((prev) =>
         prev.map((msg) =>
           msg.id === botPlaceholder.id

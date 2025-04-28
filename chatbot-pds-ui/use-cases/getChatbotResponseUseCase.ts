@@ -15,8 +15,9 @@ export async function getChatbotResponseUseCase(
     return response;
   } catch (error) {
     console.error("Error in getChatbotResponseUseCase:", error);
-    return mapToChatMessage(
-      "¡Ups! Ocurrió un error al obtener tu respuesta, intentalo más tarde.",
-    );
+    return mapToChatMessage({
+      respuesta:
+        "¡Ups! Ocurrió un error al obtener tu respuesta, intentalo más tarde.",
+    });
   }
 }
