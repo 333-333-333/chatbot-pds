@@ -58,12 +58,12 @@ intenciones = {
             "respuesta": obtener_dolar
         },
         "uf": {
-            "triggers": ["uf", "precio de la uf", "valor de la uf","UF"],
+            "triggers": ["uf", "precio de la uf", "valor de la uf"],
             "respuesta": obtener_uf
         },
         "noticias": {
-            "triggers": ["noticias", "últimas noticias", "novedades","diario","noticiero"],
-            "respuesta": obtener_noticias
+            "triggers": ["noticias", "ultimas noticias", "novedades", "diario", "noticiero"],
+            "respuesta": None
         },
         "clima": {
             "triggers": ["clima", "tiempo", "pronóstico del tiempo", "estado del tiempo"],
@@ -71,6 +71,17 @@ intenciones = {
         }
     }
 
+# Mapear nombres de países a códigos ISO
+paises = {
+    "chile": "cl",
+    "argentina": "ar",
+    "mexico": "mx",
+    "colombia": "co",
+    "españa": "es",
+    "eeuu": "us",
+    "estados unidos": "us",
+    "brasil": "br",
+}
 
 def chatbot_response(text) -> dict:
     text = _simplificar_texto(text)
@@ -85,15 +96,27 @@ def chatbot_response(text) -> dict:
             if re.search(pattern, text):
                 logging.info(f"✅ Coincidencia con: {trigger}")
 
+                # Si detectamos "noticias", miramos si también dice un país
+                if nombre_intencion == "noticias":
+
+                    # Buscar si el texto contiene alguno de los países
+                    for nombre_pais, codigo_pais in paises.items():
+                        if nombre_pais in text:
+                            return obtener_noticias(codigo_pais)
+
+                    # Si no detecta país específico, devuelve noticias de EEUU
+                    return obtener_noticias()
+
                 if nombre_intencion == "clima":
                     lugar = _extraer_lugar(text)
                     logging.info(f"Lugar extraído de la petición de clima: {lugar}")
                     return obtener_clima(lugar)
 
+                # Resto de las respuestas normales
                 respuesta = intencion["respuesta"]
                 return respuesta() if callable(respuesta) else respuesta
 
-    return "Lo siento, no entiendo tu pregunta. ¿Puedes reformularla? 🥺"
+    return fallback_response(text)
 
 
 reemplazos = {
@@ -130,3 +153,26 @@ def _extraer_lugar(texto: str) -> str:
             break
     
     return lugar.strip()
+
+
+def fallback_response(text):
+    doc = nlp(text)
+    sustantivos = [token.text for token in doc if token.pos_ == "NOUN"]
+
+    mensaje = (
+        "Lo siento, aún no puedo ayudarte con eso 🤔.\n"
+        "¿Podrías reformular tu pregunta? 🥺\n"
+    )
+
+    if sustantivos:
+        mensaje += f"• He notado que mencionas: {', '.join(sustantivos)} 🔎\n"
+
+    mensaje += (
+        "📚 Actualmente puedo ayudarte con lo siguiente:\n"
+        "• Valor del dólar\n"
+        "• Valor de la UF\n"
+        "• El clima de tu ciudad\n"
+        "• Noticias financieras recientes\n"
+    )
+
+    return mensaje

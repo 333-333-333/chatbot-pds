@@ -15,4 +15,4 @@ def test(client):
     response = client.post("/chatbot", json={"texto": "Dame el clima y el valor del dólar"})
 
     assert response.status_code == 200
-    assert response.get_json() == {"respuesta": "Lo siento, no entiendo tu pregunta. ¿Puedes reformularla? 🥺"}
+    assert "reformular" in response.get_json()["respuesta"]

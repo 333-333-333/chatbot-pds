@@ -26,7 +26,7 @@ def test(client):
     ]
     
     clarification_phrases = ["no entiendo", "no logro entender", 
-                        "no te comprendo", "podrías aclarar"]
+                        "no te comprendo", "podrías aclarar", "no puedo"]
     
     for text in ambiguous_texts:
         response = client.post("/chatbot", json={"texto": text})

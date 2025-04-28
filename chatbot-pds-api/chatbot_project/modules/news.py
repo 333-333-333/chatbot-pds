@@ -6,8 +6,8 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # API Key y URL de NewsData.io
-API_KEY = os.getenv("EXPO_PUBLIC_NEWS_API_KEY")
-API_URL = os.getenv("EXPO_PUBLIC_NEWS_API_URL")
+API_KEY = os.getenv("NEWS_API_KEY")
+API_URL = "https://newsdata.io/api/1/latest"
 
 def obtener_noticias(country_code="us"):
     """
