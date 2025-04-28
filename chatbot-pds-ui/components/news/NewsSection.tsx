@@ -96,6 +96,7 @@ export default function NewsSection({
         <ScrollView
           style={styles.scrollView}
           showsVerticalScrollIndicator={true}
+          nestedScrollEnabled={true}
         >
           {news.map((item, index) => (
             <View key={index} style={styles.newsCardWrapper}>
