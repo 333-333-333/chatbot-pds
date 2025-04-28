@@ -22,6 +22,7 @@ jobs:
       SERVER_IP: 200.13.4.225
       INTERNAL_PORT: 5000
       WEATHER_API_KEY: ${{ secrets.WEATHER_API_KEY }}
+      NEWS_API_KEY: ${{ secrets.NEWS_API_KEY }}
 
     steps:
       - name: Checkout code
@@ -52,5 +53,6 @@ jobs:
             gunzip -c /tmp/$IMAGE_NAME.tar.gz | docker load
             docker stop $IMAGE_NAME || true
             docker rm $IMAGE_NAME || true
-            docker run -d --name $IMAGE_NAME -p $INTERNAL_PORT:$INTERNAL_PORT -e FLASK_ENV=production -e FLASK_DEBUG=0 -e FLASK_RUN_PORT=$INTERNAL_PORT -e WEATHER_API_KEY=$WEATHER_API_KEY $IMAGE_NAME
+            docker system prune -f
+            docker run -d --name $IMAGE_NAME -p $INTERNAL_PORT:$INTERNAL_PORT -e FLASK_ENV=production -e FLASK_DEBUG=0 -e FLASK_RUN_PORT=$INTERNAL_PORT -e WEATHER_API_KEY=$WEATHER_API_KEY -e NEWS_API_KEY=$NEWS_API_KEY $IMAGE_NAME
           EOF
