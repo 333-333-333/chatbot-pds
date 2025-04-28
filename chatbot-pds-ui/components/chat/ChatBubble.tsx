@@ -1,7 +1,8 @@
 import { View, Text } from "@/components/Themed";
-import { LocalizedWeather } from "@/interfaces";
+import { LocalizedWeather, News } from "@/interfaces";
 import { ActivityIndicator, StyleSheet } from "react-native";
 import WeatherSection from "../weather/WeatherSection";
+import NewsSection from "../news/NewsSection";
 
 /**
  * Props for the ChatBubble component.
@@ -74,6 +75,22 @@ function BubbleContent({ content }: BubbleContentProps): React.ReactElement {
 
   if (typeof content === "string") {
     return <Text style={styles.message}>{content}</Text>;
+  }
+
+  if (typeof content === "object" && content.tipo === "noticias") {
+    const message: string = content.mensaje;
+    const news: News[] = content.datos;
+
+    if (!news) {
+      return <Text style={styles.message}>{message}</Text>;
+    }
+
+    return (
+      <View style={styles.weatherContainer}>
+        <Text style={styles.message}>{message}</Text>
+        <NewsSection news={news} loading={false} />
+      </View>
+    );
   }
 
   if (typeof content === "object" && content.tipo === "clima") {
