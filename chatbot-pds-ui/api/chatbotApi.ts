@@ -31,7 +31,7 @@ export class ChatbotApi {
     }
 
     try {
-      const response = await fetch(API_URL, {
+      const response = await fetch(API_URL + "/chatbot", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
