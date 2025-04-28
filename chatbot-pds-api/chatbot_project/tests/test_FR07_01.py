@@ -2,7 +2,7 @@ from flask import Flask
 import pytest
 from modules.chatbot_bp import chatbot_bp
 
-"""Pruebas para el Requisito Funcional 01: Manejo de texto ambiguo."""
+"""Pruebas para el Requisito Funcional 08: Manejo de texto ambiguo."""
 @pytest.fixture
 def client():
     app = Flask(__name__)

@@ -3,7 +3,7 @@ from unittest.mock import patch
 import pytest
 from modules.chatbot_bp import chatbot_bp
 
-"""Pruebas para el Requisito Funcional 02: Respuestas específicas a consultas comunes."""
+"""Pruebas para el Requisito Funcional 08, parte 1: Respuestas específicas a consultas comunes."""
 @pytest.fixture
 def client():
     app = Flask(__name__)

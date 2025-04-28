@@ -102,7 +102,7 @@ def chatbot_response(text) -> dict:
                     # Buscar si el texto contiene alguno de los países
                     for nombre_pais, codigo_pais in paises.items():
                         if nombre_pais in text:
-                            return obtener_noticias(codigo_pais)
+                            return obtener_noticias(nombre_pais, codigo_pais)
 
                     # Si no detecta país específico, devuelve noticias de EEUU
                     return obtener_noticias()
